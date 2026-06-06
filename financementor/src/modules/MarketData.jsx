@@ -196,7 +196,7 @@ function StocksPanel({ hasGeminiKey }) {
                 </div>
                 <div className="text-right">
                   <p className="font-mono font-semibold text-sm text-text-primary">
-                    ${item.price?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    {item.currency === 'INR' ? '₹' : '$'}{item.price?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
                   {item.changePercent != null && (
                     <p className={`text-xs font-mono ${item.changePercent >= 0 ? 'text-positive' : 'text-negative'}`}>

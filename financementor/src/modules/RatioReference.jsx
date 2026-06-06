@@ -7,9 +7,9 @@ const CATEGORIES = ['All', 'Liquidity', 'Profitability', 'Leverage', 'Efficiency
 
 const SYSTEM_PROMPT = `You are a financial analysis expert writing a comprehensive ratio reference guide for investment banking and CFA exam preparation.`
 
-const RATIOS_PROMPT = `Return a JSON array of 55 key financial ratios used in investment banking, equity research, credit analysis, and CFA exams.
+const RATIOS_PROMPT = `Return a JSON array of 25 key financial ratios used in investment banking, equity research, credit analysis, and CFA exams. Cover all categories: Liquidity, Profitability, Leverage, Efficiency, Valuation, Market, and Risk.
 
-For each ratio include:
+For each ratio use this exact structure:
 {
   "category": "Liquidity|Profitability|Leverage|Efficiency|Valuation|Market|Risk",
   "name": "ratio name",
@@ -21,7 +21,7 @@ For each ratio include:
   "real_example": "real company, real figure, real year"
 }
 
-Return ONLY the JSON array. No preamble or markdown fences.`
+Return ONLY a valid JSON array. No text before or after. No markdown.`
 
 const CATEGORY_COLORS = {
   Liquidity: 'blue',

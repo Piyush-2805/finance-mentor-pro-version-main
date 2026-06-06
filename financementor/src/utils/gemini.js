@@ -75,6 +75,8 @@ export const testGeminiConnection = async (apiKey) => {
 export const getMarketData = async (query) => {
   const prompt = `You are a financial data assistant. Provide the latest available market data for: ${query}
 
+IMPORTANT: If the stock is listed on an Indian exchange (NSE/BSE) like RELIANCE, TCS, INFY, HDFC, TATAMOTORS, etc., use INR (₹) as the currency. For US/international stocks, use USD ($).
+
 Return ONLY valid JSON in this format (no explanation, no markdown):
 {
   "data": [
@@ -84,7 +86,7 @@ Return ONLY valid JSON in this format (no explanation, no markdown):
       "price": number,
       "change": number (absolute change),
       "changePercent": number (percent change),
-      "currency": "USD"
+      "currency": "USD or INR depending on the stock's primary exchange"
     }
   ],
   "lastUpdated": "approximate time description",
