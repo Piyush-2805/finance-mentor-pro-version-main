@@ -26,20 +26,20 @@ All deal examples must be real, documented transactions with accurate figures.
 All formulas must be mathematically correct with every variable defined.
 Never fabricate financial data or statistics.`
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const response = await fetch('/api/groq/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${groqKey}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
+      model: 'llama-3.3-70b-versatile',
       messages: [
-        { role: 'system', content: enhancedSystem },
+        { role: 'system', content: enhancedSystem + '\n\nIMPORTANT: Respond ONLY with valid JSON. No markdown code fences, no explanation outside the JSON object.' },
         { role: 'user', content: userMessage },
       ],
       max_tokens: maxTokens,
-      temperature: 0.3,
+      temperature: 0.2,
     }),
   })
 
@@ -49,11 +49,15 @@ Never fabricate financial data or statistics.`
   const raw = data.choices?.[0]?.message?.content
   if (!raw) throw new Error('Empty response from Groq')
 
-  const clean = raw.replace(/```json\n?|```\n?/g, '').trim()
-  const start = clean.search(/[{\[]/)
-  const end = Math.max(clean.lastIndexOf('}'), clean.lastIndexOf(']'))
-  if (start === -1) throw new Error('Invalid JSON response')
-  return JSON.parse(clean.substring(start, end + 1))
+  try {
+    return JSON.parse(raw)
+  } catch {
+    const clean = raw.replace(/```json\n?|```\n?/g, '').trim()
+    const start = clean.search(/[{\[]/)
+    const end = Math.max(clean.lastIndexOf('}'), clean.lastIndexOf(']'))
+    if (start === -1) throw new Error('Invalid JSON response')
+    return JSON.parse(clean.substring(start, end + 1))
+  }
 }
 
 export const callClaude = async (systemPrompt, userMessage, maxTokens = 2000) => {

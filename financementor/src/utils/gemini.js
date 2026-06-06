@@ -14,17 +14,20 @@ export const callGroq = async (prompt, maxTokens = 2000) => {
 
   if (!apiKey) throw new Error('NO_GEMINI_KEY')
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const response = await fetch('/api/groq/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
-      messages: [{ role: 'user', content: prompt }],
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant. Always respond with valid JSON only. No markdown code fences, no explanation, no extra text before or after the JSON.' },
+        { role: 'user', content: prompt }
+      ],
       max_tokens: maxTokens,
-      temperature: 0.3,
+      temperature: 0.2,
     }),
   })
 
@@ -38,22 +41,27 @@ export const callGroq = async (prompt, maxTokens = 2000) => {
 
 export const callGeminiJSON = async (prompt, maxTokens = 2000) => {
   const raw = await callGroq(prompt, maxTokens)
-  const clean = raw.replace(/```json\n?|```\n?/g, '').trim()
-  const start = clean.search(/[{\[]/)
-  const end = Math.max(clean.lastIndexOf('}'), clean.lastIndexOf(']'))
-  if (start === -1) throw new Error('Invalid JSON response')
-  return JSON.parse(clean.substring(start, end + 1))
+  try {
+    return JSON.parse(raw)
+  } catch {
+    // Fallback: try to extract JSON from the response
+    const clean = raw.replace(/```json\n?|```\n?/g, '').trim()
+    const start = clean.search(/[{\[]/)
+    const end = Math.max(clean.lastIndexOf('}'), clean.lastIndexOf(']'))
+    if (start === -1) throw new Error('Invalid JSON response')
+    return JSON.parse(clean.substring(start, end + 1))
+  }
 }
 
 export const testGeminiConnection = async (apiKey) => {
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const response = await fetch('/api/groq/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
+      model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: 'Hi' }],
       max_tokens: 10,
     }),
