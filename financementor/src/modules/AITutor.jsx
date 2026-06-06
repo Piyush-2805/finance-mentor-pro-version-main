@@ -120,25 +120,56 @@ export default function AITutor({ hasApiKey, onNavigate }) {
       const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }))
       history.push({ role: 'user', content: userText })
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': JSON.parse(localStorage.getItem('fm_settings') || '{}').apiKey || '',
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1500,
-          system: SYSTEM_PROMPT,
-          messages: history,
-        }),
-      })
+      const settings = JSON.parse(localStorage.getItem('fm_settings') || '{}')
+      const groqKey = settings.geminiKey || ''
+      const claudeKey = settings.apiKey || ''
 
-      const data = await response.json()
-      if (data.error) throw new Error(data.error.message)
+      let reply
 
-      const reply = data.content[0].text
+      if (claudeKey) {
+        // Use Claude if available
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': claudeKey,
+            'anthropic-version': '2023-06-01',
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1500,
+            system: SYSTEM_PROMPT,
+            messages: history,
+          }),
+        })
+        const data = await response.json()
+        if (data.error) throw new Error(data.error.message)
+        reply = data.content[0].text
+      } else if (groqKey) {
+        // Fall back to Groq
+        const response = await fetch('/api/groq', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${groqKey}`,
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              ...history,
+            ],
+            max_tokens: 1500,
+            temperature: 0.3,
+          }),
+        })
+        const data = await response.json()
+        if (data.error) throw new Error(data.error.message)
+        reply = data.choices[0].message.content
+      } else {
+        throw new Error('No API key configured')
+      }
+
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch (e) {
       setMessages(prev => [...prev, { role: 'assistant', content: `Sorry, I encountered an error: ${e.message}. Check your API key in Settings.` }])
