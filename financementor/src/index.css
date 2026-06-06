@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 64px;
+  --topbar-height: 56px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background-color: #030712;
+  color: #F8FAFC;
+  overflow-x: hidden;
+}
+
+/* Bloomberg theme overrides */
+.theme-bloomberg body,
+.theme-bloomberg {
+  background-color: #0A0A0A !important;
+  color: #FF8C00 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0F172A; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* Formula box */
+.formula-box {
+  font-family: 'IBM Plex Mono', monospace;
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 16px 20px;
+  position: relative;
+}
+
+/* Skeleton animation */
+.skeleton {
+  background: linear-gradient(90deg, #1E293B 25%, #263348 50%, #1E293B 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-wave {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Card hover */
+.fm-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.fm-card:hover {
+  border-color: #475569;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+}
+
+/* Progress ring */
+@keyframes ring-fill {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: var(--target-offset); }
+}
+
+/* Concept card entrance */
+.concept-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tag chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1E293B;
+  border: 1px solid #334155;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Light theme */
+.theme-light {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #F1F5F9;
+  --bg-card: #FFFFFF;
+  --border: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+}
+
+/* Number animation */
+@keyframes countUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.number-reveal {
+  animation: countUp 0.4s ease-out forwards;
+  display: inline-block;
+}
+
+/* Module transition */
+.module-transition {
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Recharts custom */
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+/* SVG diagram styles */
+.diagram-node {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.diagram-node:hover {
+  filter: brightness(1.2);
+}
+.diagram-arrow {
+  marker-end: url(#arrowhead);
+}
