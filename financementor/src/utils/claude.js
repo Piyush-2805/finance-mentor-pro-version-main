@@ -26,7 +26,7 @@ All deal examples must be real, documented transactions with accurate figures.
 All formulas must be mathematically correct with every variable defined.
 Never fabricate financial data or statistics.`
 
-  const response = await fetch('/api/groq/openai/v1/chat/completions', {
+  const response = await fetch('/api/groq', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

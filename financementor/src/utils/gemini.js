@@ -14,7 +14,7 @@ export const callGroq = async (prompt, maxTokens = 2000) => {
 
   if (!apiKey) throw new Error('NO_GEMINI_KEY')
 
-  const response = await fetch('/api/groq/openai/v1/chat/completions', {
+  const response = await fetch('/api/groq', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const callGeminiJSON = async (prompt, maxTokens = 2000) => {
 }
 
 export const testGeminiConnection = async (apiKey) => {
-  const response = await fetch('/api/groq/openai/v1/chat/completions', {
+  const response = await fetch('/api/groq', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
